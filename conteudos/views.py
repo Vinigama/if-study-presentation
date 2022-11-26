@@ -891,7 +891,6 @@ def post_dislike_conteudo(request):
     return JsonResponse({"msg": "Criado com sucesso"} ,status=200)
 
 
-@user_passes_test(lambda u: u.is_superuser)
 def post_delete_comentario(request):
     """ Função para deletar comentário """
 
@@ -900,6 +899,9 @@ def post_delete_comentario(request):
 
     comentario_id = request.POST.get('id')
     comentario = Comentario.objects.get(pk=comentario_id)
+
+    if request.user.id != comentario.criador.id:
+        return JsonResponse({"msg": "usuário não possui permissão"} ,status=403)
 
     if request.user == comentario.criador:
         comentario.delete()
