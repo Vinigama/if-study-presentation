@@ -1,0 +1,98 @@
+{% extends 'paginas/base.html' %}
+{% load static %}
+{% block conteudo %}
+
+<style>
+    table {
+    table-layout: fixed;
+    word-wrap: break-word;
+
+}
+</style>
+
+
+<div class="row">
+    <p class="h3">Comentário Sinalizado</p>
+</div>
+
+
+<div class="row">
+    <div class="col-md-9">
+        <p class="lead">
+            Ajude os novos usuários a terem sucesso na comunidade analisando seus comentários.
+        </p>    
+    </div>
+    <div class="col-md-2 text-right">
+        <div class="borda {% if '/denuncias/comentarios/' == request.path %}bg-secao{% endif %}" style="display: inline-block; padding: 4px;"> 
+            <a href="{% url 'sinalizacao_comentario' %}">Fila de Análise</a>
+        </div>
+    </div>
+    <div class="col-md-1 text-right">
+        <div class="borda {% if '/denuncias/comentarios/historico/' == request.path %}bg-secao{% endif %}" style="display: inline-block; padding: 4px;"> 
+            <a href="{% url 'historico_sinalizacao_comentario' %}">Histórico</a>
+        </div>
+    </div>
+</div>
+<hr class="my-hr-line">
+
+<div class="row">
+    <p class="h3">Histórico</p>
+</div>
+
+<div class="row">
+    <div class="col-md-9">
+        <p class="lead">
+            Histórico das sinalizações de comentários. 
+        </p>    
+    </div>
+</div>
+{% if sinalizacoes %}
+<table class="table table-striped mt-2">
+    <thead>
+        <tr class="row">
+        <th class="col-md-2 col-sm-2">Usuário</th>
+        <th class="col-md-6 col-sm-6">Comentário</th>
+        <th class="col-md-2 col-sm-2">Ação</th>
+        <th class="col-md-2 col-sm-2">Data</th>
+        </tr>
+    </thead>
+<tbody>
+{% for sinalizacao in sinalizacoes %}
+    <tr class="row">
+        <td class="col-sm-2 col-md-2">
+            <h6>{{ sinalizacao.usuario.nome_completo }}</h6>
+        </td>
+        <td class="col-sm-6 col-md-6">
+            <h6>{{ sinalizacao.comentario }}</h6>
+        </td>
+
+        <td class="col-sm-2 col-md-2">
+            <h6 class="borda {% if sinalizacao.acao == 'parece_ok' %}bg-success{% else %}bg-danger{% endif %}" style="display: inline-block; padding: 1px;">
+                {{ sinalizacao.acao_verbose }}
+            </h6>
+        </td>
+        <td class="col-sm-2 col-md-2">
+            <h6>{{ sinalizacao.data|date:"d/m" }}</h6>
+        </td>
+    </tr>
+{% endfor %}
+    </tbody>
+</table>
+
+<!-- Paginação -->
+{% include 'paginas/pagination.html' %}
+<!-- Fim da Paginação -->
+
+{% else %}
+<hr class="my-hr-line">
+
+<div class="row mt-4">
+    <h6 class="mx-auto lead">
+        Não há nenhuma sinalização de comentário no histórico. Quer voltar para página principal? Volte para <a href="{% url 'index' %}" class="text-primary">página de trilhas.</a>  
+    </h6>
+</div>
+{% endif %}
+{% endblock %}
+
+
+

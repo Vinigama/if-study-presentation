@@ -1,0 +1,43 @@
+<div class="col-md-3 col-lg-2">
+    <a href="{% url 'perfil' perfil_id  %}">
+        <div class="row {% if '/informacoes/' in request.path %}bg-secao{% endif %} borda sidebar">
+            <span class="col-md-12">
+                Perfil
+            </span>
+        </div>
+    </a>
+
+    {% if request.user.id == perfil_id %}
+    {% if not request.user.email_confirmado %}
+    <a href="{% url 'envio_confirmacao_email' perfil_id %}">
+        <div class="row {% if '/envio_confirmacao_email/' in request.path %}bg-secao{% endif %} borda sidebar mt-2">
+            <span class="col-md-12">
+                Verificar Email
+            </span>
+        </div>
+    </a>
+    {% endif %}
+    <a href="{% url 'editar_perfil' perfil_id %}">
+        <div class="row {% if '/editar/' in request.path %}bg-secao{% endif %} borda sidebar mt-2">
+            <span class="col-md-12">
+                Editar Perfil
+            </span>
+        </div>
+    </a>
+    <a href="{% url 'trocar_senha' perfil_id %}">
+        <div class="row {% if '/senha/' in request.path %}bg-secao{% endif %} borda sidebar mt-2">
+            <span class="col-md-12">
+                Trocar Senha
+            </span>
+        </div>
+    </a>
+    {% endif %}
+    <a href="{% url 'perfil_conteudos' perfil_id %}">
+        <div class="row {% if '/conteudos/' in request.path %}bg-secao{% endif %} borda sidebar mt-2">
+            <span class="col-md-12">
+                Conteúdos Postados
+            </span>
+        </div>  
+    </a>
+</div>
+

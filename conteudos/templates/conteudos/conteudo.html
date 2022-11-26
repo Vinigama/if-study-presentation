@@ -1,0 +1,269 @@
+{% extends 'paginas/base.html' %}
+
+{% load static %}
+
+{% block conteudo %}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="text-center">{{ conteudo.titulo }}</h1>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <video id="meuVideo" class="col-12 col-md-12 mx-auto" controls controlsList="nodownload">
+        <source src="{{ conteudo.arquivo.url }}" type="video/mp4">
+    </video>
+</div>
+
+<div class="d-flex mt-2">
+    <div class="mr-auto p-2">
+        <span class="h4">Autor: {{ conteudo.criador.nome_completo }}</span>
+    </div>
+    <div class="p-2">
+        {% autoescape off %}
+        <button class="btn bg-cinza-escuro btn-secondary like-conteudo">
+        {{ conteudo_like }}
+        </button>
+        {% endautoescape on %}
+    </div>
+    <div class="p-2">
+        <span class="h4 quantidade-like-conteudo" value="{{ conteudo.quantidade_like }}">{{ conteudo.quantidade_like }}</span>
+    </div>
+    <div class="p-2">
+        {% autoescape off %}
+        <button class="btn bg-cinza-escuro btn-secondary dislike-conteudo">
+        {{ conteudo_dislike }}
+        </button>
+        {% endautoescape on %}
+    </div>
+    <div class="p-2">
+        <span class="h4 quantidade-dislike-conteudo" value="{{ conteudo.quantidade_dislike }}">{{ conteudo.quantidade_dislike }}</span>
+    </div>
+</div>
+
+<div class="d-flex bd-highlight mt-1">
+    <div class="p-2 mr-auto bd-highlight h5">
+        Data de Publicação: {{ conteudo.data|date:"d/m/Y" }}
+    </div>
+    <div class="p-2 bd-highlight h5">
+        {{ conteudo.visualizacao.count|pluralize:"Visualização, Visualizações" }}: {{ conteudo.visualizacao.count }}
+    </div>
+</div>
+
+<div class="d-flex">
+    <div class="p-1 ml-1 mr-auto">
+        <h5>
+            Tecnologia: {{ conteudo.secao.tecnologia }}
+        </h5>
+    </div>
+    <div class="p-1">
+        <button class="btn bg-cinza-escuro btn-secondary " data-url="#" onclick="sinalizar_conteudo(this)">
+            <i class="fa fa-flag text-dark" aria-hidden="true"></i>
+        </button>
+    </div>
+</div>
+
+<hr>
+
+<div class="row mt-2">
+    <div class="col-md-12">
+        <span class="h4">Descrição</span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 mt-3">
+        <span class="lead">{{ conteudo.descricao }}</span>
+    </div>
+</div>
+
+<hr>
+
+<div class="bg-cinza-escuro borda p-4 comentarios-id" value="{{ comentario_id }}">
+    
+    <div class="d-flex flex-row">
+        <div class="p-2">
+            <span class="h4 quantidade-comentario" value="{{ quantidade_comentarios }}">
+                {{ quantidade_comentarios }}
+            </span>
+        </div>
+        <div class="p-2">
+            <span class="h4 comentario">
+            {% if quantidade_comentarios > 1 %}
+            Comentários
+            {% else %}
+            Comentário
+            {% endif %}
+            </span>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="form-group col-md-10 col-sm-9">
+            <input type="text" class="form-control" id="input-comentario" placeholder="Adicione um comentário... ">
+        </div>
+
+        <div class="col-md-2 col-sm-2">
+            <button type="submit" id="enviar_comentario" onclick="enviarComentario()" class="btn buttoncomentario text-light" disabled>
+                Enviar
+            </button>
+        </div>
+    </div>
+
+    <div id="secao-comentario">
+        {% for comentario in comentarios %}
+        <div class="card card-comentario ml-2 mt-3" value="{{ comentario.id }}">
+            <div class="row ml-2">
+                <img src="{{ comentario.criador.dados.foto.url }}" alt="Foto de Perfil"  class="foto-perfil-comentario">
+                <div class="col-md-11 col-sm-9">
+                    <div class="row justify-content-between">
+                        <a href="{% url 'perfil' comentario.criador.id %}">
+                            <h5 class="card-title ml-3">{{ comentario.criador.nome_completo }}</h5>
+                        </a>
+                        {% if comentario.criador == request.user %}
+                        <button class="btn bg-cinza-escuro btn-secondary" onclick="deletarComentario(this, '{{ comentario.pk}}')">
+                            <i class="fa fa-trash text-dark" aria-hidden="true"></i>
+                        </button>
+                        {% else %}
+                        <button  class="btn bg-cinza-escuro btn-secondary" data-url="{% url 'gerar_sinalizacao_comentario' comentario.pk %}" onclick="sinalizar_comentario(this)">
+                            <i class="fa fa-flag text-dark" aria-hidden="true"></i>
+                        </button>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="card-text mb-1">
+                        {% if comentario.comentario|length > 150 %}
+                        <div class="half-content" id="half-{{ comentario.pk }}">{{ comentario.comentario|truncatechars:150 }}
+                            <a data-id="{{ comentario.pk }}" class="show-hide-btn h6">
+                                Ver mais
+                            </a>
+                        </div>
+                        <div class="full-content" id="full-{{ comentario.pk }}" style="display: none;">
+                            {{ comentario.comentario }}
+                            <a data-id="{{ comentario.pk}}" class="show-hide-btn h6">
+                                Ver menos
+                            </a>
+                        </div>
+                    {% else %}
+                    {{ comentario.comentario }}
+                    {% endif %} 
+                    </div>
+                    <div class="d-inline-flex">
+                        <div class="p-2">
+                            {% if request.user in comentario.like.all %}
+                            <i class="fas fa-thumbs-up like" onclick="likeComentario(this)" title="Gostei"></i>
+                            {% else %}
+                            <i class="far fa-thumbs-up like" onclick="likeComentario(this)" title="Gostei"></i>
+                            {% endif %}
+                            <span class="quantidade-like-comentario" value="{{ comentario.quantidade_like }}">{{ comentario.quantidade_like }}</span>
+                        </div>
+                        <div class="p-2">
+                            {% if request.user in comentario.dislike.all %}
+                            <i class="fas fa-thumbs-down dislike" onclick="dislikeComentario(this)" title="Não gostei"></i>
+                            {% else %}
+                            <i class="far fa-thumbs-down dislike" onclick="dislikeComentario(this)" title="Não gostei"></i>
+                            {% endif %}
+                            <span class="quantidade-dislike-comentario" value="{{ comentario.quantidade_dislike }}">{{ comentario.quantidade_dislike }}</span>
+                        </div>
+                        <div class="p-2">
+                            <span class="card-title responder h6" onclick="responder(this); this.onclick=null;">Responder</h6>
+                        </div>
+                    </div>
+                    <div class="resposta"></div>
+
+                    <div class="respostas mt-2 ml-3">
+                        {% if comentario.resposta_set.all %}
+                        <div id="accordion">
+                            <div class="h6" id="rotacao" data-toggle="collapse" role='button' data-target="#comentario-{{ comentario.id }}" onclick="rotacionar(this)">
+                                <i id="rotation" class="fa fa-angle-down"></i>
+                                Mostrar <span class="quantidade-resposta">{{ comentario.resposta_set.all.count }}
+                                {{ comentario.resposta_set.all.count|pluralize:"resposta, respostas" }}</span>
+                            </div>
+                            
+                            <div id="comentario-{{ comentario.id }}" class="collapse accordion-resposta">
+                                {% for resposta in comentario.resposta_set.all %}
+                                <div class="card card-comentario ml-2 card-resposta mt-4" value="{{ resposta.id }}">
+                                    <div class="row">
+                                        <img src="{{ resposta.criador.dados.foto.url }}" alt="Foto de Perfil"  class="foto-perfil-base">
+                                        <div class="col-sm-9 col-11">
+                                            <div class="d-flex flex-row">
+                                                <a href="{% url 'perfil' resposta.criador.id %}">
+                                                    <div class="h6 card-title">{{ resposta.criador.nome_completo }}</div>
+                                                </a>
+                                                <div class="ml-3">
+                                                {% if resposta.criador == request.user %}
+                                                <button class="btn bg-cinza-escuro btn-sm btn-secondary" onclick="deletarComentario(this, '{{ resposta.pk}}')">
+                                                    <i class="fa fa-trash text-dark" aria-hidden="true"></i>
+                                                </button>
+                                                {% else %}
+                                                <button  class="btn bg-cinza-escuro btn-secondary btn-sm" data-url="{% url 'gerar_sinalizacao_comentario' resposta.id %}" onclick="sinalizar_comentario(this)">
+                                                    <i class="fa fa-flag text-dark" aria-hidden="true"></i>
+                                                </button>
+                                                {% endif %}
+                                                </div>
+                                            </div>
+                                            {% if resposta.comentario|length > 70 %}
+                                            <div class="half-content" id="half-{{ resposta.comentario.pk }}">{{ resposta.comentario|truncatechars:70 }}
+                                                <a data-id="{{ resposta.comentario.pk }}" class="show-hide-btn h6">
+                                                    Ver mais
+                                                </a>
+                                            </div>
+                                            <div class="full-content" id="full-{{ resposta.comentario.pk }}" style="display: none;">
+                                                {{ resposta.comentario }}
+                                                <a data-id="{{ resposta.comentario.pk}}" class="show-hide-btn h6">
+                                                    Ver menos
+                                                </a>
+                                            </div>
+                                            {% else %}
+                                            {{ resposta.comentario }}
+                                            {% endif %} 
+                                            <div class="row">
+                                                <div class="d-inline-flex ml-3">
+                                                    <div class="p-1">
+                                                        {% if request.user in resposta.like.all %}
+                                                        <i class="fas fa-thumbs-up like" onclick="likeComentario(this)" title="Gostei"></i>{% else %}<i class="far fa-thumbs-up like" onclick="likeComentario(this)" title="Gostei"></i>
+                                                        {% endif %}
+                                                        <span class="quantidade-like-comentario" value="{{ resposta.quantidade_like }}">{{ resposta.quantidade_like }}</span>
+                                                    </div>
+                                                    <div class="p-1">
+                                                        {% if request.user in resposta.dislike.all %}
+                                                        <i class="fas fa-thumbs-down dislike" onclick="dislikeComentario(this)" title="Não gostei"></i>{% else %}<i class="far fa-thumbs-down dislike" onclick="dislikeComentario(this)" title="Não gostei"></i>{% endif %}
+                                                        <span class="quantidade-dislike-comentario" value="{{ resposta.quantidade_dislike }}">{{ resposta.quantidade_dislike }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <input type="hidden" id="solicita-edicao-url" data-url="{% url 'editar_conteudo' conteudo.id %}" />
+    <input type="hidden" id="solicita-exclusao-url" data-url="{% url 'gerar_solicitacao_exclusao' conteudo.id %}" />
+    <input type="hidden" id="sinalizar-conteudo" data-url="{% url 'gerar_sinalizacao_conteudo' conteudo.id %}" />
+</div>
+<script>
+    conteudoId = "{{ conteudo.id }}";
+</script>
+
+<script src="{% static 'js/conteudo.js' %}"></script>
+<script src="{% static 'js/sinalizacao.js' %}"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% endblock conteudo %}
+
+{% block script %}
+
+<script>
+    const video = document.getElementById('meuVideo');
+    video.oncontextmenu = () => false;
+</script>
+{% endblock script %}

@@ -1,0 +1,162 @@
+{% load static %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
+
+<!doctype html>
+<html lang="pt-br" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+
+    {% block titulo %}
+        <title>IFStudy</title>
+    {% endblock %}
+
+    <!-- Ícone do favicon -->
+    <link href="{% static 'img/favicon.svg' %}" rel="shortcut icon" type="image/x-icon" />
+
+    <!-- Importação do Font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- CSS adicional -->
+    <link href="{% static 'css/design.css' %}" rel="stylesheet">
+
+    {% block header %}
+    {% endblock header %}
+
+
+    <!-- Ícone na barra de abas -->
+    <!-- <link rel="shortcut icon" href="{% static 'img/favicon.png' %}"> -->
+
+    <!-- Bloco destinado aos estilos para cada página -->
+    {% block styles %}
+
+    {% endblock %}
+
+</head>
+
+<body class="d-flex flex-column h-100">
+    <main role="main" class="flex-shrink-1  ">
+        <!--MENU - NAVBAR-->
+        {% block menu %}
+        <nav class="navbar navbar-expand-lg navbar-dark bg-ifstudy font-115 shadow">
+
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'index' %}">
+                    <img src="{% static 'img/logo_branco.svg' %}" height="40" alt="">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                    aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav ml-auto">
+                        {% if request.user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-white" href="#" id="navbarDropdownMenuLink"
+                                role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ request.user.dados.url }}" alt="Foto de Perfil"  class="foto-perfil-base perfil-logado">
+                                    <span class="h5 dropdown-toggle usuario ml-3 mt-2" value="{{ request.user.nome_completo }}" id="username">{{ request.user.nome_completo }}</span>
+                                </div>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item {% if '/perfil/' in request.path %}active{% endif %}" href="{% url 'perfil' request.user.id %}">
+                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                    Perfil</a>
+                                <a class="dropdown-item {% if '/trilhas/registrar/' == request.path %}active{% endif %}" href="{% url 'registrar' %}">
+                                    <i class="fas fa-edit" aria-hidden="true"></i>
+                                    Compartilhar conteúdo</a>   
+                                    <a class="dropdown-item {% if '/trilhas/conteudo/historico/' == request.path %}active{% endif %}" href="{% url 'historico_assistido' %}">
+                                        <i class="fas fa-clock" aria-hidden="true"></i>
+                                    Histórico</a>   
+                                <a class="dropdown-item {% if '/trilhas/conteudo/em_alta/' == request.path %}active{% endif %}" href="{% url 'em_alta' %}">
+                                    <i class="fas fa-compass" aria-hidden="true"></i>
+                                    Em Alta</a>
+                                    
+                                <a class="dropdown-item {% if '/trilhas/conteudo/conteudo_postado/' == request.path %}active{% endif %}" href="{% url 'conteudo_postado' %}">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                    Conteúdos Postados</a>   
+                                {% if request.user.is_superuser %}      
+                                <a class="dropdown-item {% if '/denuncias/comentarios/' == request.path or '/denuncias/comentarios/historico/' == request.path %}active{% endif %}" href="{% url 'sinalizacao_comentario' %}">
+                                    <i class="fa fa-tasks" aria-hidden="true"></i>
+                                    Comentários Sinalizados</a> 
+                                <a class="dropdown-item {% if '/denuncias/perfis/' == request.path or '/denuncias/perfis/historico/' == request.path %}active{% endif %}" href="{% url 'sinalizacao_perfil' %}">
+                                    <i class="fa fa-flag" aria-hidden="true"></i>
+                                    Perfis Sinalizados</a>
+                                <a class="dropdown-item {% if '/denuncias/conteudos/' == request.path or '/denuncias/conteudos/historico/' == request.path %}active{% endif %}" href="{% url 'sinalizacao_conteudo' %}">
+                                    <i class="fa fa-book" aria-hidden="true"></i>
+                                    Conteúdos Sinalizados</a> 
+                                <a class="dropdown-item {% if '/trilhas/conteudo/verificar_baixa/' == request.path or '/trilhas/conteudo/verificar_baixa/' == request.path %}active{% endif %}" href="{% url 'verificar_baixa_conteudo' %}">
+                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                    Verificar Baixa de Conteúdo</a>
+                                <a class="dropdown-item {% if '/trilhas/divulgar/' == request.path %}active{% endif %}" href="{% url 'divulgar_trilhas' %}">
+                                    <i class="fa fa-share" aria-hidden="true"></i>
+                                    Divulgar Trilhas</a>
+                                {% endif %}                            
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'logout' %}">
+                                    <i class="fa fa-power-off" aria-hidden="true"></i>
+                                    Sair</a>
+                            </div>
+                        </li>
+                        {% else %}
+                        <!-- <li class="nav-item ">
+                            <a class="nav-link" href="#">
+                                <i class="fa fa-user-plus" aria-hidden="true"></i>
+                                Registrar
+                            </a>
+                        </li> -->
+                        {% comment %} <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Login
+                            </a>
+                        </li> {% endcomment %}
+                        {% endif %}
+
+                    </ul>
+                </div>
+
+                <!-- fim do container -->
+            </div>
+        </nav>
+        {% endblock %}
+
+
+        <!-- Bloco de conteúdo -->
+        <div class="container py-5">
+            {% block conteudo %}
+            <h3>Página inicial</h3>
+            {% endblock %}
+        </div>
+
+    </main>
+
+    <footer class="mt-auto">
+
+        <!-- Bloco acima do rodapé -->
+        {% block rodape %}
+        <div class="container-fluid bg-rodape text-white p-4">
+
+        </div>
+        {% endblock %}
+    </footer>
+
+    <script src="{% static 'js/admin-editables.js' %}"></script>
+
+
+    <!-- Latest compiled and minified JavaScript -->
+
+    <!-- Bloco destinado aos scripts para cada página -->
+    {% block scripts %}
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+
+    {% endblock %}
+
+</body>
+
+</html>

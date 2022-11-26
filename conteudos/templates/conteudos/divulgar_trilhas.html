@@ -1,0 +1,46 @@
+{% extends 'paginas/base.html' %}
+
+{% load static %}
+
+{% block conteudo %}
+<div class="row">
+    <div class="mr-auto h2">Faça a divulgação de uma nova tecnologia ou seção</div>
+</div>
+
+<hr class="my-hr-line">
+
+<form method="post" action="postar/" style="height: 300px;"> {% csrf_token %}
+    <div class="form-group">
+        <label for="tecnologia" class="lead">Escolha uma tecnologia: </label>
+        <select name="tecnologia" class="form-control" id="tecnologia" onchange="getTecnologias($(this).val(), atualizarSecoes)">
+            {% for tecnologia in tecnologias %}
+            <option value="{{ tecnologia.nome }}">{{ tecnologia.nome }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="secao" class="lead mt-2">Escolha uma secão: </label>
+        <select name="secao" class="form-control" id="secao">
+            <option value="">Não selecionada</option>
+        </select>
+
+        <label for="assunto" class="lead mt-2">Assunto: </label>
+        <input type="text" name="assunto" class="form-control" />
+    </div>
+
+    {{ quill_form.media }}
+    {{ quill_form.as_p }}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {%  endif %}
+    <div class="text-center">
+        <button class="btn bg-ifstudy text-light" type="submit">Enviar</button>
+    </div>
+</form>
+
+<script src="{% static 'js/divulgar_trilhas.js' %}"></script>
+
+{% endblock %}

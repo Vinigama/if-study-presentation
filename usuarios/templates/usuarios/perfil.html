@@ -1,0 +1,30 @@
+{% extends 'paginas/base.html' %}
+{% load static %}
+{% load markdown_extras %}
+
+{% block conteudo %}
+
+{% include 'paginas/perfil_header.html' %}
+
+<div class="row mt-4">
+    {% include 'paginas/perfil_sidebar.html' %}
+    <div class="col-md-8">
+        <div class="h3">
+            Sobre
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card borda bg-secao">
+                    <div class="card-body">
+                      <span class="card-text text-justify">{{ perfil.dados.sobre|markdown|safe }}</span>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/perfil.js' %}"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}

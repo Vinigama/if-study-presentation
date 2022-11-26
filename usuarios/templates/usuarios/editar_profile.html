@@ -1,0 +1,88 @@
+{% extends 'paginas/base.html' %}
+{% load static %}
+{% load markdown_extras %}
+{% load crispy_forms_tags %}
+
+{% block conteudo %}
+
+<div class="row message">
+    <div class="col-md-5">
+        {% include 'paginas/alertas.html' %}
+    </div>
+</div>
+
+{% include 'paginas/perfil_header.html' %}
+
+<div class="row mt-4">
+    {% include 'paginas/perfil_sidebar.html' %}
+    <div class="col-md-8 ml-2">
+        <span class="h3">Edite o seu perfil</h3>
+        <hr class="my-hr-line">
+        <div class="row">
+            <div class="col-md-12 ml-1">
+                <span class="lead">
+                    Informação pública
+                </span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h6>
+                            Foto de Perfil
+                        </h6>
+                    </div>
+                    <div class="col-lg-12 ml-auto">
+                        <div class="text-left">
+                            <img src="{{ request.user.dados.foto.url }}" style="width: 100px; height: 100px; border-radius: 10px">
+                        </div>
+                        <form action="{% url 'editar_perfil' perfil_id %}" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="h6">
+                                <div class="row">
+                                    <div class="col-md-6 ">
+                                        {{ perfil_form.first_name|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-6 ">
+                                        {{ perfil_form.last_name|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 ">
+                                        {{ perfil_form.username|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-6 ">
+                                        {{ perfil_form.email|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {{ perfil_form.phone_number|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-6 ">
+                                        {{ perfil_data.foto|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {{ perfil_data.sobre|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <button type="submit" value="Save" class="btn text-light btn-lg bg-ifstudy mt-3">Alterar<i class="fas fa-save ml-3"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/jquery.mask.min.js' %}"></script>
+<script src="{% static 'js/editar_profile.js' %}"></script>
+<script src="{% static 'js/perfil.js' %}"></script>
+{% endblock %}

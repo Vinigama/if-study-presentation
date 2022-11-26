@@ -1,0 +1,159 @@
+/*
+Cores IFStudy
+*/
+:root {
+    --verde-principal: #064F23;
+    --verde-secundaria: #5B8C5A;
+    --preto-claro: #3D3D3D;
+    --cinza: #F5F5F6;
+    --cinza-escuro: #C4C4C4; 
+    --cinza-claro: #DBD8D7;
+}
+
+body {
+    background-color: var(--cinza);
+}
+
+.bg-cinza-escuro {
+    background-color:var(--cinza-escuro);
+}
+
+.bg-ifstudy {
+    background-color: var(--verde-principal);
+}
+
+.bg-rodape {
+    background-color: var(--preto-claro);
+}
+
+.bg-secao{
+    background-color: var(--cinza-claro);
+}
+
+.borda {
+    border-radius: 13px;
+    border: none;
+}
+.thumbnail-fixa {
+    width: 420px;
+    height: 250px;
+}
+
+.foto-perfil{
+    width: 70px;
+    height: 70px;
+    border-radius:50px;
+}
+
+.foto-perfil-base
+{
+    width: 40px;
+    height: 40px;
+    border-radius:50px;
+}
+
+.foto-perfil-comentario{
+    width: 50px;
+    height: 50px;
+    border-radius:50px;
+}
+
+.padding-card-conteudo {
+    padding-left: 80px;
+}
+
+img {
+    width: 100%;
+}
+
+#rotation.rotate{
+    transform: rotate(-180deg);
+}
+
+a { color: inherit; } 
+
+a:hover {
+    text-decoration:none; 
+    cursor:pointer;  
+    color: inherit;
+    /*color: var(--verde-principal);*/
+}
+
+/* admin editables */
+.editable-wrapper {
+    position: relative;
+}
+
+.edit-button-upper-right {
+    position: absolute !important;
+    z-index: 1;
+}
+
+#input-comentario, #input-resposta {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #000000;
+    outline:none;
+    box-shadow:none;
+}
+
+.dislike,.responder, .like {
+    cursor: pointer;
+}
+
+.buttoncomentario, .buttonresposta{
+    background-color: var(--verde-principal);
+}
+
+.card-comentario{
+    background-color: var(--cinza-escuro);
+    border: none;
+}
+
+.dropdown-menu > a.active, .dropdown-item:active{
+    background-color : gray;
+    
+}
+
+.my-hr-line {
+    position: relative;
+    left: -15px;
+    width: calc(100% + 30px);
+    height: 2px;
+    bottom: 10px;
+}
+
+.typography{
+    font-size: 1.2rem;
+}
+
+.fixed-row-bottom { 
+    position: fixed; 
+    bottom: 0;
+}
+
+.fixed-message { 
+    position: fixed; 
+    bottom: 50;
+}
+
+.sidebar:hover{
+    background-color: var(--cinza-claro);
+}
+
+table {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+body.swal2-height-auto {
+    height: 100% !important
+ }
+
+ .inputBarcodeField::-webkit-calendar-picker-indicator {
+    display:none !important;
+  }
+
+.no-box[type="checkbox"]  {
+    display: none;
+}

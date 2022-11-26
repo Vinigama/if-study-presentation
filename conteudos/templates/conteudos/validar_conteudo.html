@@ -1,0 +1,138 @@
+{% extends 'paginas/base.html' %}
+
+{% load static %}
+
+{% block header %}
+
+<link href="{% static 'css/tags_snippet.css' %}" rel="stylesheet">
+
+{% endblock header %}
+
+
+{% block conteudo %}
+
+<form class="needs-validation" id="formConteudo" novalidate>
+
+
+<div class="form-row justify-content-center">
+
+    <div class="col-lg-6 col-md-12">
+
+        <h3>Conteúdo</h3>
+        <hr>
+
+        <label class="lead" for="titulo">Título do conteúdo</label>
+        <div class="d-flex div-pai">
+            <input type="text" class="form-control dadosConteudo" name="titulo" value="{{ solicitacao.conteudo_pendente.titulo }}" required disabled>
+            <button onclick="habilitarInput(this)" type="button" class="btn btn-dark p-2 text-center"><i class="fas fa-edit m-0 p-0"></i></button>
+        </div> 
+        <label for="thumbnail" class="lead">Thumbnail</label>
+        {% if solicitacao.conteudo_pendente.thumbnail %}
+        <div class="col-4 p-0 m-0 mb-3">
+            <img src="{{ solicitacao.conteudo_pendente.thumbnail.url }}" class="borda">
+        </div>
+        {% endif %}
+        <small class="text-muted">Você pode sobrescrever a thumbnail selecionando a imagem no input abaixo</small>
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" name="thumbnail">
+            <label class="custom-file-label">Selecione uma Thumbnail</label>
+        </div>
+
+        <label class="lead" for="descricao">Descrição</label>
+        <div class="d-flex div-pai">
+            <textarea name="descricao" class="form-control dadosConteudo" required disabled>{{ solicitacao.conteudo_pendente.descricao }}</textarea>
+            <button onclick="habilitarInput(this)" type="button" class="btn btn-dark p-2 text-center"><i class="fas fa-edit m-0 p-0"></i></button>
+        </div> 
+        <label class="lead" for="tipo_de_conteudo">Tipo de conteúdo</label>
+        <div class="d-flex div-pai">
+            <select class="form-control dadosConteudo" name="tipo_de_conteudo" value="{{ solicitacao.conteudo_pendente.tipo }}" required disabled>
+                <option value="video" {% if solicitacao.conteudo_pendente.tipo ==  "video"%}selected{% endif %}>Vídeo</option>
+                <option value="arquivo" {% if solicitacao.conteudo_pendente.tipo ==  "arquivo"%}selected{% endif %}>Arquivo</option>
+            </select>
+            <button onclick="habilitarInput(this)" type="button" class="btn btn-dark p-2 text-center"><i class="fas fa-edit m-0 p-0"></i></button>
+        </div>
+
+        <label class="lead" for="carga_conteudo">Carga conteúdo</label>
+        <div class="d-flex">
+            <input type="number" class="form-control dadosConteudo mr-2" name="carga_horas" min="0" placeholder="horas" required>
+            <input type="number" class="form-control dadosConteudo mr-2" name="carga_minutos" min="0" placeholder="minutos" required>
+            <input type="number" class="form-control dadosConteudo" name="carga_segundos" min="0" placeholder="segundos" required>
+        </div>
+        
+
+        <h3 class="mt-5">Classificação</h3>
+        <hr>
+
+        <div class="d-flex">
+            <div class="w-100">
+                <label class="lead" for="tipo_de_tecnologia">Tecnologia</label>
+                <div class="d-flex div-pai">
+                    <select class="form-control dadosConteudo" name="tipo_de_tecnologia" onchange="getTecnologias($(this).val(), atualizarSecoes)" required disabled>
+                        {% for tecnologia in tecnologias %}
+                        <option value="{{ tecnologia.nome }}" {% if tecnologia.nome == solicitacao.conteudo_pendente.secao.tecnologia.nome %}selected{% endif %}>{{ tecnologia.nome }}</option>
+                        {% endfor %}
+                    </select>
+                    <button onclick="habilitarInput(this)" type="button" class="btn btn-dark p-2 text-center"><i class="fas fa-edit m-0 p-0"></i></button>
+                    <button type="button" class="btn rounded-circle btn-light align-self-end mb-2 ml-1 hab-botao" onclick="mostrarInput()" disabled>
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div> 
+            </div>
+        </div>
+
+        <div class="d-flex">
+            <div class="w-100">
+                <label class="lead" for="tipo_de_secao">Seção</label>
+                <div class="d-flex div-pai">
+                    <select class="form-control dadosConteudo" name="tipo_de_secao" id="secao_select" required disabled>
+                        {% for secao in secoes %}
+                        <option value="{{ secao.nome }}" {% if secao.nome == solicitacao.conteudo_pendente.secao.nome %} selected {% endif %}>{{ secao.nome }}</option>
+                        {% endfor %}
+                    </select>
+                    <button onclick="habilitarInput(this)" type="button" class="btn btn-dark p-2 text-center"><i class="fas fa-edit m-0 p-0"></i></button>
+                    <button type="button" class="btn rounded-circle btn-light align-self-end mb-2 ml-1 hab-botao" onclick="mostrarInput()" disabled>
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div> 
+            </div>
+        </div>
+
+        <h3 class="mt-5">Subida do conteúdo</h3>
+        <hr>
+
+        <label class="lead" for="tags">Tags</label>
+        <div class="wrapper mb-3">
+          <div class="content">
+              <ul id="tags"><input id="input_tag" type="text" spellcheck="false"></ul>
+          </div>
+        </div>
+        <label for="arquivo" class="lead">Arquivo</label>
+        <div class="col-12 col-sm-3 p-0 m-0 mb-3">
+            <a class="btn btn-dark w-100" href="{{ solicitacao.conteudo_pendente.arquivo.url }}" download><i class="fa fa-download fa-2x" aria-hidden="true"></i></a>
+        </div>
+        <small class="text-muted">Você pode sobrescrever o conteúdo selecionando o arquivo no input abaixo</small>
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" name="arquivo">
+            <label class="custom-file-label">Selecione um arquivo</label>
+        </div>
+        <div class="d-flex justify-content-center">
+            <button type="button" class="btn text-light btn-lg bg-dark mt-3" data-toggle="modal" data-target="#modalRejeicao">Rejeitar conteúdo<i class="fa fa-times ml-3" aria-hidden="true"></i></button>
+            <button type="submit" class="btn text-light btn-lg bg-ifstudy mt-3 ml-3">Aprovar conteúdo<i class="fas fa-save ml-3"></i></button>
+        </div>
+    </div>
+</div>
+</form>
+{% include "./modal_rejeicao_conteudo.html" %}
+<script>
+    carga_conteudo = '{{ solicitacao.conteudo_pendente.carga }}'
+    solicitacao_id = '{{ solicitacao.id }}';
+    tags =  JSON.parse('{{ tags | escapejs }}');
+</script>
+<script src="{% static 'js/tags_snippet.js' %}"></script>
+<script src="{% static 'js/validar_conteudo.js' %}"></script>
+<script src="{% static 'js/modal_rejeicao_conteudo.js' %}"></script>
+
+{% endblock conteudo %}
+
+{% block script %}
+{% endblock script %}

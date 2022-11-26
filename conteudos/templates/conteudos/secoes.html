@@ -1,0 +1,108 @@
+{% extends 'paginas/base.html' %}
+{% load static %}
+{% load admin_utils %}
+{% load filtering_utils %}
+
+{% block conteudo %}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="text-center">{{ tecnologia.nome }}</h1>
+    </div>
+</div>
+
+<div id="accordion">
+{{ secao.nome }}
+{% get_ativos tecnologia "secao_set" as secoes %}
+{% for secao in secoes %}
+            <div class="card mt-2"
+            {% admin_editable user.is_superuser "conteudos" "secao" secao.id %}
+            data-edit-button-top="15" data-edit-button-right="50">
+            <div class="card-header text-center btn bg-cinza-escuro" id="rotacao" data-toggle="collapse" data-target="#secao-{{ secao.id }}" onclick="rotacionar(this)">
+                <div class="d-flex align-items-center">
+                    <h3 class="mx-auto w-100 " >
+                        {{ secao.nome }}
+                    </h3>
+                    <i id="rotation" class="fa fa-angle-down ml-auto"></i>
+                </div>
+            </div>
+            <div id="secao-{{ secao.id }}" class="collapse">
+                <div class="card-body bg-secao">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="search-bar" onkeyup="buscar(this)" placeholder="Digite o nome do conteúdo">
+                                <div class="input-group-append">
+                                <button class="btn btn-secondary" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% get_ativos secao "conteudo_set" as conteudos %}
+                <div id="conteudos">
+                {% for conteudo in conteudos %}
+                <a href="{% url 'conteudo' conteudo.id %}">
+                    <div class="linha">
+                        <div class="card-body bg-secao borda mt-3">
+                            <div class="row" {% admin_editable user.is_superuser "conteudos" "conteudo" conteudo.id %}>
+                                <div class="col-lg-5 d-none d-md-block text-md-center">
+                                    <img src="{{ conteudo.thumbnail.url }}" class="borda thumbnail-fixa">
+                                </div>
+                                <div class="col-md-12 col-lg-7 text-md-center padding-card-conteudo">
+                                    <h4 class="display-4 text-left pl-md-5 pl-lg-1">{{ conteudo.custom_titulo }}</h4>
+                                    <div class="row">
+                                        <div class="col-md-10 col-lg-12 ml-md-4 ml-lg-0 card bg-secao border-0" style="height: 170px;">
+                                            <div class="card-body">
+                                                <div class="card-text text-left-justify">
+                                                    <p class="text-justify">
+                                                        {{ conteudo.descricao|truncatechars:145 }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer">
+                                                <div class="d-flex">
+                                                    <div class="mr-auto p-1">
+                                                        <h6><i class="fa fa-user fa-lg" aria-hidden="true"></i> {{ conteudo.criador.nome_completo }}</h6>
+                                                    </div>
+                                                    <div class="p-1">
+                                                        <h6><i class="fa fa-calendar fa-lg" aria-hidden="true"></i> {{ conteudo.data|date:"d/m/Y" }}</h6>
+                                                    </div>
+                                                </div>
+                                            </div>                       
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="delete-last"/>
+                    </div>
+                </a>
+                {% endfor %}
+                </div>
+                </div>
+            </div>
+        </div>
+{% endfor %}
+</div>
+<script>
+    function rotacionar(element){
+        $(element).find('#rotation').toggleClass("rotate");
+    }
+
+    $(document).ready(function() {
+        $(".delete-last").last().remove();
+    });
+
+</script>
+
+<script src="{% static 'js/secoes.js' %}"></script>
+{% endblock conteudo %}
+
+{% block script %}
+
+
+
+
+{% endblock script %}

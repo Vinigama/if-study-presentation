@@ -1,0 +1,181 @@
+{% extends 'paginas/base.html' %}
+
+{% block conteudo %}
+
+{% load static %}
+
+<div class="row">
+    <p class="h3">Comentário Sinalizado</p>
+</div>
+
+<div class="row">
+    <div class="col-md-9">
+        <p class="lead">
+            Ajude os novos usuários a terem sucesso na comunidade analisando seus comentários.
+        </p>    
+    </div>
+    <div class="col-md-2 text-right">
+        <div class="borda {% if '/denuncias/comentarios/' == request.path %}bg-secao{% endif %}" style="display: inline-block; padding: 4px;"> 
+            <a href="{% url 'sinalizacao_comentario' %}">Fila de Análise</a>
+        </div>
+    </div>
+
+    <div class="col-md-1 text-right">
+        <div class="borda {% if '/denuncias/comentarios/historico/' == request.path %}bg-secao{% endif %}" style="display: inline-block; padding: 4px;"> 
+            <a href="{% url 'historico_sinalizacao_comentario' %}">Histórico</a>
+        </div>
+    </div>
+</div>
+
+<hr class="my-hr-line">
+{% if sinalizacao %}
+
+<div class="row">
+    <h4 class="card-title">Conteúdo</h4>
+</div>
+
+<div class="row">
+    <span class="lead">
+        Conteúdo em que o comentário foi sinalizado
+    </span>
+</div>
+
+<div class="row">
+    <a href="{% url 'conteudo' sinalizacao.conteudo.id %}" class="text-primary lead" style="font-size: 1.7rem; top: 100px;">
+            {{ sinalizacao.conteudo }}
+    </a>
+    <div class="d-flex justify-content-end ml-auto">
+        <div class="p-2">
+            {% if sinalizacao.conteudo.criador.dados.foto %}
+            <img src="{{ sinalizacao.conteudo.criador.dados.foto.url }}" alt="Foto de Perfil"  class="foto-perfil-base">
+            {% else %}
+            <i class="fa fa-user-circle fa-2x" aria-hidden="true"></i> 
+            {% endif %}
+        </div>
+        <div class="p-2">
+            <div class="h6 mt-2">
+                {{ sinalizacao.conteudo.criador.nome_completo }}
+            </div>
+        </div>
+        <div class="p-2 mt-2">
+            <small class="text-muted">
+                Publicado: {{ sinalizacao.conteudo.data|date:"d/m/Y" }}
+            </small>
+        </div>
+      </div>
+</div>  
+
+<hr class="my-hr-line">
+
+<div class="row">
+    <h4 class="card-title">Comentário</h4>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card borda bg-secao">
+            <div class="card-body">
+              <p class="card-text text-justify">{{ sinalizacao.comentario }}</p>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end">
+            <div class="p-2">
+                {% if sinalizacao.foto_conteudo.dados.foto %}
+                <img src="{{ sinalizacao.foto_conteudo.dados.foto.url }}" alt="Foto de Perfil"  class="foto-perfil-base">
+                {% else %}
+                <i class="fa fa-user-circle fa-2x" aria-hidden="true"></i> 
+                {% endif %}
+            </div>
+            <div class="p-2">
+                <div class="h6 mt-2">
+                    {{ sinalizacao.comentario.criador.nome_completo }}
+                </div>
+            </div>
+            <div class="p-2 mt-2">
+                <small class="text-muted">
+                    Publicado: {{ sinalizacao.comentario.publicado|date:"d/m/Y" }}
+                </small>
+            </div>
+          </div>
+          <div class="row fixed-row-bottom message">{% include 'paginas/alertas.html' %}</div>
+    </div>
+
+    <div class="col-md-4 order-md-2 mb-4">
+        <ul class="list-group mb-3">
+            <li class="list-group-item d-flex justify-content-between lh-condensed bg-secao">
+                <div>
+                    <small class="lead typography">Ações</small>
+                </div>
+            </li>
+            <form action="{% url 'apurar_comentario' sinalizacao.id %}" id="apuracao" method="POST">
+                {% csrf_token %}
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    <div>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <input type="radio" name="opcao" value="remover" class="mt-1">
+                            </div>
+                            <div class="col-md-10">
+                                <h6>Remover comentário</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <small class="text-muted">
+                                    Opção para remoção permanente do comentário sinalizado.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <input type="radio" class="mt-1" name="opcao" value="parece_ok" id="parece_ok">
+                            </div>
+                            <div class="col-md-9 text-justify">
+                                <h6>Parece ok</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-9 ml-3">
+                                    <small class="text-muted">
+                                        Esta resposta está boa e não é de baixa qualidade (lembre-se de votar de acordo com isso).
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item ">
+                    <div class="d-flex">
+                        <div class="p-2">
+                            <button type="submit" class="btn bg-ifstudy text-light btn-sm enviar">Enviar</button>
+                        </div>
+                    </div>
+                </li>
+            </form>
+        </ul>
+        <input type="hidden" id="url" data-url="{% url 'apurar_comentario' sinalizacao.id %}" />
+        
+    {% else %}
+    <div class="row">
+        <p class="h4">Não tem mais nada nesta fila!</p>
+    </div>
+    <div class="row">
+        <p class="lead">
+            Sem comentário pendente para ser analisado. Quer voltar para página principal? Volte para <a href="{% url 'index' %}" class="text-primary">página de trilhas.</a>
+        </p>
+    </div>
+    <div class="row fixed-message message">
+        {% include 'paginas/alertas.html' %}
+    </div>
+    {% endif %}
+</div>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'js/sinalizacoes_comentarios.js' %}"></script>
+{% endblock %}

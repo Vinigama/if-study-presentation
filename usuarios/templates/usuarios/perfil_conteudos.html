@@ -1,0 +1,91 @@
+{% extends 'paginas/base.html' %}
+
+{% load static %}
+
+{% block conteudo %}
+
+{% include 'paginas/perfil_header.html' %}
+
+<div class="row mt-4">
+    {% include 'paginas/perfil_sidebar.html' %}
+    <div class="col-md-8 ml-2">
+        <span class="h3">Conteúdos Postados</h3>
+        <hr class="my-hr-line">
+        <div class="row">
+            <div class="col-md-12 ml-1">
+                <span class="lead">
+                    Informações sobre os conteúdos
+                </span>
+            </div>
+        </div>
+
+        <div class="row">
+            {% if conteudos %}
+            <div class="col-md-12">
+                <table class="table table-striped mt-4">
+                    <thead>
+                        <tr class="row">
+                        <th class="col-sm-2 col-md-2 ">Conteúdo</th>
+                        <th class="col-sm-4 col-md-8">Descrição</th>
+                        <th class="col-sm-2 col-md-2">Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for conteudo in conteudos %}
+                            <tr class="row">
+                                <td class="col-sm-2 col-md-2">
+                                    <a href="{% url 'conteudo' conteudo.id %}" class="text-primary">
+                                    {{ conteudo.titulo }}
+                                    </a>
+                                </td>           
+                                <td class="col-sm-8 col-md-8">
+                                    <h6>{{ conteudo.descricao }}</h6>
+                                </td>
+                                <td class="col-sm-2 col-md-2">
+                                    <h6>{{ conteudo.data|date:"d/m" }}</h6>
+                                </td>
+                            </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div class="mt-3 h6">
+                    <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center"> {% if conteudos.has_previous %} <li class="page-item">
+                        <a class="page-link" href="?page={{ conteudos.previous_page_number }}">Anterior</a>
+                        </li> {% else %} <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Anterior</a>
+                        </li> {% endif %} {% if conteudos.number|add:'-4' > 1 %} <li class="page-item">
+                        <a class="page-link" href="?page={{ conteudos.number|add:'-5' }}">&hellip;</a>
+                        </li> {% endif %} {% for i in conteudos.paginator.page_range %} {% if conteudos.number == i %} <li class="page-item active" aria-current="page">
+                        <span class="page-link">
+                            {{ i }}
+                            <span class="sr-only">(current)</span>
+                        </span>
+                        </li> {% elif i > conteudos.number|add:'-5' and i < conteudos.number|add:'5' %} <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                        </li> {% endif %} {% endfor %} {% if conteudos.paginator.num_pages > conteudos.number|add:'4' %} <li class="page-item">
+                        <a class="page-link" href="?page={{ conteudos.number|add:'5' }}">&hellip;</a>
+                        </li> {% endif %} {% if conteudos.has_next %} <li class="page-item">
+                        <a class="page-link" href="?page={{ conteudos.next_page_number }}">Próximo</a>
+                        </li> {% else %} <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Próximo</a>
+                        </li> {% endif %} </ul>
+                    </nav>
+                </div>
+            </div>
+            {% else %}
+            
+            <div class="col-md-12 ml-1">
+                <hr class="my-hr-line">
+                <span class="lead">
+                    Não há registro de conteúdo postado
+                </span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/perfil.js' %}"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}

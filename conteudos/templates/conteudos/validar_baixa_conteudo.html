@@ -1,0 +1,132 @@
+{% extends 'paginas/base.html' %}
+
+{% load static %}
+
+{% block header %}
+
+<link href="{% static 'css/tags_snippet.css' %}" rel="stylesheet">
+
+{% endblock header %}
+
+
+{% block conteudo %}
+
+<form class="needs-validation" id="formConteudo" novalidate>
+
+    <div class="form-row justify-content-center">
+
+        <div class="col-lg-6 col-md-12">
+        
+            <h3 class="mt-3">Conteúdo</h3>
+            <hr>
+    
+            <label class="lead" for="titulo">Título do conteúdo</label>
+            <div class="d-flex div-pai">
+                <input type="text" class="form-control" value="{{ conteudo.titulo }}" required disabled>
+            </div> 
+            <label for="thumbnail" class="lead">Thumbnail</label>
+            {% if conteudo.thumbnail %}
+            <div class="col-4 p-0 m-0 mb-3">
+                <img src="{{ conteudo.thumbnail.url }}" class="borda">
+            </div>
+            {% endif %}
+    
+            <label class="lead" for="descricao">Descrição</label>
+            <div class="d-flex div-pai">
+                <textarea name="descricao" class="form-control" required disabled>{{ conteudo.descricao }}</textarea>
+            </div> 
+            <label class="lead" for="tipo_de_conteudo">Tipo de conteúdo</label>
+            <div class="d-flex div-pai">
+                <select class="form-control" name="tipo_de_conteudo" value="{{ conteudo.tipo }}" required disabled>
+                    <option value="video" {% if conteudo.tipo ==  "video" %}selected{% endif %}>Vídeo</option>
+                    <option value="arquivo" {% if conteudo.tipo ==  "arquivo" %}selected{% endif %}>Arquivo</option>
+                </select>
+            </div>
+            <label class="lead" for="titulo">Data de publicação</label>
+            <div class="d-flex div-pai">
+                <input type="text" class="form-control" value="{{ conteudo.data }}" required disabled>
+            </div> 
+            
+    
+            <h3 class="mt-5">Classificação</h3>
+            <hr>
+    
+            <div class="d-flex">
+                <div class="w-100">
+                    <label class="lead" for="tipo_de_tecnologia">Tecnologia</label>
+                    <div class="d-flex div-pai">
+                        <select class="form-control" name="tipo_de_tecnologia" onchange="getTecnologias($(this).val(), atualizarSecoes)" required disabled>
+                            {% for tecnologia in tecnologias %}
+                            <option value="{{ tecnologia.nome }}" {% if tecnologia.nome == conteudo.secao.tecnologia.nome %}selected{% endif %}>{{ tecnologia.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div> 
+                </div>
+            </div>
+    
+            <div class="d-flex">
+                <div class="w-100">
+                    <label class="lead" for="tipo_de_secao">Seção</label>
+                    <div class="d-flex div-pai">
+                        <select class="form-control" name="tipo_de_secao" id="secao_select" required disabled>
+                            {% for secao in secoes %}
+                            <option value="{{ secao.nome }}" {% if secao.nome == conteudo.secao.nome %} selected {% endif %}>{{ secao.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div> 
+                </div>
+            </div>
+    
+            <p class="lead mt-3" for="tags">Tags</p>
+            <div class="d-flex" style="flex-flow: row wrap;">
+                {% if conteudo.tags.all %}
+                    {% for tag in conteudo.tags.all %}    
+                        <p class="px-3 py-2 bg-dark borda text-light mr-2">{{ tag.nome }}</p>
+                    {% endfor %}
+                {% else %}
+                    <p>Sem Tags</p>
+                {% endif %}
+            </div>
+
+            <h3 class="mt-5">Autor</h3>
+            <hr>
+            <label class="lead" for="titulo">Nome do autor</label>
+            <div class="d-flex div-pai">
+                <input type="text" class="form-control" value="{{ conteudo.criador.first_name }} {{ conteudo.criador.last_name }}" required disabled>
+            </div>
+
+            <h3 class="mt-5">Status da baixa</h3>
+            <hr>
+            <label class="lead" for="titulo">Conteúdo sofreu baixa?</label>
+            <div class="d-flex div-pai">
+                <input type="text" class="form-control" value="{% if conteudo.baixa %}SIM{% else %}NÃO{% endif %}" required disabled>
+            </div>
+            <label class="lead" for="titulo">Baixa em: </label>
+            <div class="d-flex div-pai">
+                <input type="text" class="form-control" value="{% if conteudo.baixa %}{{ conteudo.data_baixa }}{% else %}N/A{% endif %}" required disabled>
+            </div>
+
+            <div class="text-center mt-5">
+                <a class="btn btn-outline-primary text-dark btn-lg mt-3 ml-3" href="{% url 'gerar_certificado' conteudo.id %}">Baixar certificado<i class="fas fa-download ml-3"></i></a>
+                {% if not conteudo.baixa %}
+                    <button type="button" class="btn text-light btn-lg bg-ifstudy mt-3 ml-3" onclick="efetuarBaixa()">Efetuar baixa<i class="fas fa-save ml-3"></i></button>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+</form>
+
+<script>
+    conteudo_id = '{{ conteudo.id }}';
+    tags =  JSON.parse('{{ tags | escapejs }}');
+</script>
+<script src="{% static 'js/tags_snippet.js' %}"></script>
+<script src="{% static 'js/validar_baixa_conteudo.js' %}"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% endblock conteudo %}
+
+{% block script %}
+{% endblock script %}

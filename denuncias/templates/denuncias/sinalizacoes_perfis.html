@@ -1,0 +1,245 @@
+{% extends 'paginas/base.html' %}
+{% load markdown_extras %}
+{% load static %}
+
+{% block conteudo %}
+
+<div class="row fixed-message message">
+    {% include 'paginas/alertas.html' %}
+</div>
+
+<div class="row">
+    <p class="h3">Perfil Sinalizado</p>
+</div>
+
+<div class="row">
+    <div class="col-md-9">
+        <p class="lead">
+            Ajude os novos usuários a terem sucesso na comunidade analisando as sinalizações
+        </p>    
+    </div>
+    <div class="col-md-2 text-right">
+        <div class="borda {% if '/denuncias/perfis/' == request.path %}bg-secao{% endif %}" style="display: inline-block; padding: 4px;"> 
+            <a href="{% url 'sinalizacao_perfil' %}">Fila de Análise</a>
+        </div>
+    </div>
+
+    <div class="col-md-1 text-right">
+        <div class="borda {% if '/denuncias/comentarios/historico/' == request.path %}bg-secao{% endif %}" style="display: inline-block; padding: 4px;"> 
+            <a href="{% url 'historico_sinalizacao_perfil' %}">Histórico</a>
+        </div>
+    </div>
+</div>
+
+<hr class="my-hr-line">
+
+{% if sinalizacao %}
+<div class="row">
+    <h4 class="card-title">Perfil</h4>
+</div>
+
+<div class="row">
+    <div class="col-md-9">
+        <div class="row">
+            <div class="col-md-4 col-sm-3">
+                <a href="{% url 'perfil' perfil_id %}" class="text-primary lead" style="font-size: 1.5rem; top: 100px;">
+                    {{ sinalizacao.perfil.nome_completo }}
+                </a>
+            </div>
+            <div class="d-flex ml-auto">
+                <div class="p-2">
+                    <img src="{{ sinalizacao.perfil.dados.foto.url }}" alt="Foto de Perfil"  class="foto-perfil-base"> 
+                </div>
+                <div class="p-2 mt-2">
+                    <small class="text-muted">
+                        Registrado em {{ sinalizacao.perfil.date_joined }}
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <h5>Sobre</h5>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card borda bg-secao">
+                    <div class="card-body">
+                      <span class="card-text text-justify">{{ sinalizacao.perfil.dados.sobre|markdown|safe }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mt-1">
+        <table class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">Sinalizações</th>
+                <th scope="col">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for chave, valor in contagem.items %} 
+              <tr>
+                <td>{{ chave }}</td> 
+                <td>{{ valor }}
+              </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+    </div>
+</div>
+
+<!-- caso exista -->
+<hr class="my-hr-line">
+<div class="row">
+    <div class="col-md-9">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    {% if comentarios %}
+                    <label class="h4">Comentários Removidos</label>
+                    <table class="table table-striped mt-2">
+                        <thead>
+                            <tr class="row">
+                            <th class="col-md-10 col-sm-10 col-10">Comentário</th>
+                            <th class="col-md-2 col-sm-2 col-2">Data</th>
+                            </tr>
+                        </thead>
+                    <tbody>
+                    {% for comentario in comentarios %}
+                        <tr class="row">
+                            <td class="col-sm-10 col-md-10 col-10">
+                                <h6>{{ comentario }}</h6>   
+                            </td>
+                            <td class="col-sm-2 col-md-2 col-2">
+                                <h6>{{ comentario.data|date:"d/m" }}</h6>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                        </tbody>
+                    </table>                    
+                    {% endif %}
+                    <!-- Formulário  -->
+                    <form action="{% url 'apurar_perfil' sinalizacao.id %}" id="apuracao" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group-text"></div>
+                </div>
+            </div>
+        </div>       
+    </div>
+    <div class="col-md-3">
+        <ul class="list-group mb-3">
+            <li class="list-group-item d-flex justify-content-between lh-condensed bg-secao">
+                <div>
+                    <small class="lead typography">Ações</small>
+                </div>
+            </li>
+                <li class="list-group-item">
+                    <div>
+                        <div class="row">
+                            <div class="col-md-1 col-1">
+                                <input type="radio" name="opcao" value="excluir" class="mt-1">
+                            </div>
+
+                            <div class="col-md-10 col-11">
+                                <h6>Excluir</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10 col-9 ">
+                                <small class="text-muted">
+                                    Opção para excluir o perfil.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div>
+                        <div class="row">
+                            <div class="col-md-1 col-1">
+                                <input type="radio" class="mt-1" name="opcao" value="silenciar">
+                            </div>
+                            <div class="col-md-9 col-11 text-justify">
+                                <h6>Silenciar Perfil</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-1 col-1"></div>
+                                <div class="col-md-9 ml-3">
+                                    <small class="text-muted">
+                                        Escolha o tempo de duração.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div>
+                        <div class="row">
+                            <div class="col-md-1 col-1">
+                                <input type="radio" class="mt-1" name="opcao" value="notificacao">
+                            </div>
+                            <div class="col-md-9 col-11 text-justify">
+                                <h6>Enviar Notificação</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-9 ml-3">
+                                    <small class="text-muted">
+                                        Enviar email notificando o usuário.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div>
+                        <div class="row">
+                            <div class="col-md-1 col-1">
+                                <input type="radio" class="mt-1" name="opcao" value="parece_ok">
+                            </div>
+                            <div class="col-md-9 col-11 text-justify">
+                                <h6>Parece OK</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-1 col-1"></div>
+                                <div class="col-md-9 ml-3">
+                                    <small class="text-muted">
+                                        Esta resposta está boa e não é de baixa qualidade (lembre-se de votar de acordo com isso).
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item ">
+                    <div class="d-flex">
+                        <div class="p-2">
+                            <button type="submit" class="btn bg-ifstudy text-light btn-sm enviar" disabled>Enviar</button>
+                        </div>
+                    </div>
+                </li>
+            </form>
+        </ul>
+    </div>
+</div>
+
+{% else %}
+<div class="row">
+    <p class="h4">Não tem mais nada nesta fila!</p>
+</div>
+<div class="row">
+    <p class="lead">
+        Sem perfil pendente para ser analisado. Quer voltar para página principal? Volte para <a href="{% url 'index' %}" class="text-primary">página de trilhas.</a>
+    </p>
+</div>
+{% endif %}
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'js/sinalizacoes_perfils.js' %}"></script>
+{% endblock %}

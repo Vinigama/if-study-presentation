@@ -1,0 +1,65 @@
+{% load static %}
+
+<link href="{% static 'css/tags_snippet.css' %}" rel="stylesheet">
+<script src="{% static 'js/tags_snippet_filter.js' %}"></script>
+
+<div class="row">
+    <div class="ml-auto">
+        <button type="button" class="btn bg-cinza-escuro btn-secondary text-dark font-weight-bold" data-toggle="modal" data-target="#filtro" data-whatever="@mdo"><i class="fa fa-filter" aria-hidden="true"></i><span class="text-bold"> Filtro</span></button>
+        <div class="modal fade" id="filtro" tabindex="-1" role="dialog" aria-labelledby="filtroLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="filtroLabel">Filtro</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'filtro' %}" class="needs-validation" id="formConteudo" method="novalidate">
+                    {% csrf_token %}
+                    <label class="lead" for="titulo">Título do conteúdo</label>
+                    <input type="text" class="form-control dadosConteudo" name="titulo" required>
+                    <div class="form-group">
+                        <label class="lead" for="tipo_de_tecnologia">Tecnologia</label>
+                        <select class="form-control dadosConteudo" name="tipo_de_tecnologia" onchange="getTecnologias($(this).val(), atualizarSecoes)" required>
+                            <option value="" selected disabled>Selecione uma Tecnologia</option>
+                            {% for tecnologia in tecnologias %}
+                            <option value="{{ tecnologia.nome }}">{{ tecnologia.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="lead" for="tipo_de_secao">Seção</label>
+                        <select class="form-control dadosConteudo" name="tipo_de_secao" id="secao_select" required>
+                            <option value="" selected disabled>Selecione uma seção</option>
+                            {% for secao in secoes %}
+                            <option value="{{ secao.nome }}">{{ secao.nome }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="lead" for="tags">Tags</label>
+                        <div class="wrapper" style="width: 460px;">
+                            <div class="content">
+                                <ul id="tags"><input id="input_tag" name="tags" class="inputBarcodeField" list="etiquetas" type="text"></ul>
+                                <datalist id="etiquetas">
+                                    {% for etiqueta in etiquetas %}
+                                        <option value="{{ etiqueta.nome }}"></option>
+                                    {% endfor %}
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button type="submit" class="btn btn-primary">Filtrar</button>
+                      </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+</div>
+

@@ -1,0 +1,117 @@
+{% extends 'paginas/base.html' %}
+
+{% load static %}
+
+{% block header %}
+
+<link href="{% static 'css/tags_snippet.css' %}" rel="stylesheet">
+
+{% endblock header %}
+
+
+{% block conteudo %}
+
+<form class="needs-validation" id="formConteudo" novalidate>
+
+
+<div class="form-row justify-content-center">
+
+    <div class="col-lg-6 col-md-12">
+
+        <h3>Conteúdo</h3>
+        <hr>
+
+        <label class="lead" for="titulo">Título do conteúdo</label>
+        <div class="d-flex div-pai">
+            <input type="text" class="form-control dadosConteudo" name="titulo" value="{{ conteudo.titulo }}" required disabled>
+            <button onclick="habilitarInput(this)" type="button" class="btn btn-dark p-2 text-center"><i class="fas fa-edit m-0 p-0"></i></button>
+        </div> 
+        <label for="thumbnail" class="lead">Thumbnail</label>
+        {% if conteudo.thumbnail %}
+        <div class="col-4 p-0 m-0 mb-3">
+            <img src="{{ conteudo.thumbnail.url }}" class="borda">
+        </div>
+        {% endif %}
+        <small class="text-muted">Você pode sobrescrever a thumbnail selecionando a imagem no input abaixo</small>
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" name="thumbnail">
+            <label class="custom-file-label">Selecione uma Thumbnail</label>
+        </div>
+
+        <label class="lead" for="descricao">Descrição</label>
+        <div class="d-flex div-pai">
+            <textarea name="descricao" class="form-control dadosConteudo" required disabled>{{ conteudo.descricao }}</textarea>
+            <button onclick="habilitarInput(this)" type="button" class="btn btn-dark p-2 text-center"><i class="fas fa-edit m-0 p-0"></i></button>
+        </div>         
+
+        <h3 class="mt-5">Classificação</h3>
+        <hr>
+
+        <div class="d-flex">
+            <div class="w-100">
+                <label class="lead" for="tipo_de_tecnologia">Tecnologia</label>
+                <div class="d-flex div-pai">
+                    <select class="form-control dadosConteudo" name="tipo_de_tecnologia" onchange="getTecnologias($(this).val(), atualizarSecoes)" required disabled>
+                        {% for tecnologia in tecnologias %}
+                        <option value="{{ tecnologia.nome }}" {% if tecnologia.nome == conteudo.secao.tecnologia.nome %}selected{% endif %}>{{ tecnologia.nome }}</option>
+                        {% endfor %}
+                    </select>
+                    <button onclick="habilitarInput(this)" type="button" class="btn btn-dark p-2 text-center"><i class="fas fa-edit m-0 p-0"></i></button>
+                    <button type="button" class="btn rounded-circle btn-light align-self-end mb-2 ml-1 hab-botao" onclick="mostrarInput()" disabled>
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div> 
+            </div>
+        </div>
+
+        <div class="d-flex">
+            <div class="w-100">
+                <label class="lead" for="tipo_de_secao">Seção</label>
+                <div class="d-flex div-pai">
+                    <select class="form-control dadosConteudo" name="tipo_de_secao" id="secao_select" required disabled>
+                        {% for secao in secoes %}
+                        <option value="{{ secao.nome }}" {% if secao.nome == conteudo.secao.nome %} selected {% endif %}>{{ secao.nome }}</option>
+                        {% endfor %}
+                    </select>
+                    <button onclick="habilitarInput(this)" type="button" class="btn btn-dark p-2 text-center"><i class="fas fa-edit m-0 p-0"></i></button>
+                    <button type="button" class="btn rounded-circle btn-light align-self-end mb-2 ml-1 hab-botao" onclick="mostrarInput()" disabled>
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div> 
+            </div>
+        </div>
+
+        <h3 class="mt-5">Subida do conteúdo</h3>
+        <hr>
+
+        <label class="lead" for="tags">Tags</label>
+        <div class="wrapper mb-3">
+          <div class="content">
+              <ul id="tags"><input id="input_tag" type="text" spellcheck="false"></ul>
+          </div>
+        </div>
+        <label for="arquivo" class="lead">Arquivo</label>
+        <div class="col-12 col-sm-3 p-0 m-0 mb-3">
+            <a class="btn btn-dark w-100" href="{{ conteudo.arquivo.url }}" download><i class="fa fa-download fa-2x" aria-hidden="true"></i></a>
+        </div>
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn text-light btn-lg bg-ifstudy mt-3 ml-3">Solicitar edição<i class="fas fa-save ml-3"></i></button>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="solicita-edicao-url" data-url="{% url 'gerar_solicitacao_edicao' conteudo.id %}" />
+<input type="hidden" id="diversos-attr" data-existe="{{ solicitacao_existe }}" />
+
+</form>
+<script>
+    tags =  JSON.parse('{{ tags | escapejs }}');
+</script>
+<script src="{% static 'js/tags_snippet.js' %}"></script>
+<script src="{% static 'js/editar_conteudo.js' %}"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% endblock conteudo %}
+
+{% block script %}
+{% endblock script %}

@@ -1,0 +1,54 @@
+{% extends 'paginas/base.html' %}
+
+{% load static %}
+
+{% block conteudo %}
+
+<div class="row">
+    <div class="mr-auto h2">Histórico de compartilhamento de conteúdo</div>
+</div>
+
+<hr class="my-hr-line">
+
+<div class="row">
+    <span class="lead">
+        Lista de conteúdos postados por você
+    </span>   
+</div>
+
+
+
+{% if conteudos %}
+
+<div class="d-flex mt-2">
+    <div class="p-2 col-md-6 col-lg-4 ml-auto">
+        <div class="input-group">
+            <input type="text" class="form-control" id="search-bar" placeholder="Digite o nome do conteúdo">
+            <div class="input-group-append">
+            <button class="btn btn-secondary" type="button">
+                <i class="fa fa-search"></i>
+            </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4" id="conteudos">
+{% for conteudo in conteudos %}
+{% include 'paginas/conteudos.html' %}
+{% endfor %}
+</div>
+
+{% else %}
+<hr class="my-hr-line">
+
+<div class="row mt-4">
+    <h6 class="mx-auto lead">
+        Você não fez nenhuma postagem de conteúdo. Você deseja contribuir com a plataforma? <a href="{% url 'registrar' %}" class="text-primary">Compartilhar conteúdo.</a>
+    </h6>
+</div>
+{% endif %}
+
+<script src="{% static 'js/base.js' %}"></script>
+{% endblock %}
+

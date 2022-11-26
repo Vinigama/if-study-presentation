@@ -1,0 +1,48 @@
+{% extends 'paginas/base.html' %}
+
+{% load static %}
+
+{% block conteudo %}
+<div class="row">
+    <div class="mr-auto h2">Verifique um conteúdo pelo código de verificação</div>
+</div>
+
+<hr class="my-hr-line">
+
+<div class="d-flex">
+    <div class="col-md-6 col-lg-4 ml-auto">
+        <div class="input-group">
+            <input type="text" class="form-control" id="conteudo-search-bar" placeholder="Código de verificação">
+            <div class="input-group-append">
+            <button class="btn btn-secondary" type="button" onclick="buscarConteudo()">
+                <i class="fa fa-search"></i>
+            </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4" id="conteudos">
+    <div class="card-body bg-secao borda mt-3">
+        <div class="row">
+            <div class="col-md-12 col-lg-7 text-md-center padding-card-conteudo">
+                <h4 class="display-4 text-left pl-md-5 pl-lg-1">Digite acima, o código informado no certificado</h4>
+                <div class="row">
+                    <div class="col-md-10 col-lg-12 ml-md-4 ml-lg-0 card bg-secao border-0" style="height: 170px;">
+                        <div class="card-body">
+                            <div class="card-text text-left-justify">
+                                <p class="text-justify lead">
+                                    Após pressionar o botão de busca, você será redirecionado à tela para verificação da baixa de certificados
+                                </p>
+                            </div>
+                        </div>                    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+<script src="{% static 'js/verificacao_conteudo.js' %}"></script>
+
+{% endblock %}

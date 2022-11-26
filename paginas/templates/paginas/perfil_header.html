@@ -1,0 +1,37 @@
+<div class="row">
+    <div class="mr-auto h2">Perfil</div>
+</div>
+
+<hr class="my-hr-line">
+
+<div class="row">
+    <div class="col-md-3 col-lg-2">
+        <img src="{{ perfil.dados.foto.url }}" style="width: 160px; height: 140px; border-radius: 10px">
+    </div>
+    <div class="col-md-6 col-sm-9 col-lg-7 ml-lg-2 mt-2">
+        <h3>
+            {{ perfil.nome_completo }}
+        </h3>
+        <div class="row">
+            <div class="col-md-12">
+                <span class="text-muted">
+                    <i class="fas fa-birthday-cake"></i>  Registrado em {{ perfil.date_joined }}
+                </span>
+            </div>
+        </div>
+        {% if perfil.is_superuser %}
+        <div class="row mt-2">
+            <div class="col-md-12">
+                <h6 class="text-success">Administrador</h6>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-md-3 col-sm-3 col-lg-2 text-right perfil-menu">
+
+    </div>
+
+</div>
+
+<input type="hidden" class="perfil-id" data="{{ perfil_id }}" data-url="{% url 'editar_perfil' perfil_id %}">
+<input type="hidden" id="perfil-sinalizar" data-url="{% url 'sinalizar_perfil' perfil_id %}">

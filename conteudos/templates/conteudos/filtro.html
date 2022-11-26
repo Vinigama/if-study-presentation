@@ -1,0 +1,35 @@
+{% extends 'paginas/base.html' %}
+{% load static %}
+
+{% block conteudo %}
+
+<!-- Filtro -->
+{% include 'paginas/filtro_header.html' %}
+<!-- Fim -->
+
+<div class="row">
+    <div class="mr-auto h2">Resultado</div>
+</div>
+
+<hr class="my-hr-line">
+
+<div class="row mt-1">
+    <span class="lead">
+        Resultado da busca
+    </span>   
+</div>
+
+{% for conteudo in conteudos %}
+{% include 'paginas/conteudos.html' %}
+{% empty %}
+<hr class="my-hr-line">
+<div class="row mt-4">
+    <h6 class="mx-auto lead">
+        Sem resultados. Você deseja acessar os conteúdos da plataforma? <a href="{% url 'index' %}" class="text-primary">Acessar conteúdos.</a>
+    </h6>
+</div>
+{% endfor %}
+
+
+<script src="{% static 'js/filtro.js' %}"></script>
+{% endblock %}

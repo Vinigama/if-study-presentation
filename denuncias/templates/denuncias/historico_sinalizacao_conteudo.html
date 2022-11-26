@@ -1,0 +1,95 @@
+{% extends 'paginas/base.html' %}
+{% load static %}
+{% block conteudo %}
+
+
+<div class="row">
+    <p class="h3">Conteúdo Sinalizado</p>
+</div>
+
+<div class="row">
+    <div class="col-md-9">
+        <p class="lead">
+            Ajude os novos usuários a terem sucesso na comunidade analisando seus conteúdos.
+        </p>
+    </div>
+
+    <div class="col-md-2 text-right">
+        <div class="borda {% if '/denuncias/conteudos/' == request.path %}bg-secao{% endif %}" style="display: inline-block; padding: 4px;"> 
+            <a href="{% url 'sinalizacao_conteudo' %}">Fila de Análise</a>
+        </div>
+    </div>
+
+    <div class="col-md-1 text-right">
+        <div class="borda {% if '/denuncias/conteudos/historico/' == request.path %}bg-secao{% endif %}" style="display: inline-block; padding: 4px;"> 
+            <a href="{% url 'historico_sinalizacao_conteudo' %}">Histórico</a>
+        </div>
+    </div>
+</div>
+
+<hr class="my-hr-line">
+
+<div class="row">
+    <p class="h3">Histórico</p>
+</div>
+
+<div class="row">
+    <div class="col-md-9">
+        <p class="lead">
+            Histórico das sinalizações de conteúdos. 
+        </p>    
+    </div>
+</div>
+{% if sinalizacoes %}
+<table class="table table-striped mt-2">
+    <thead>
+        <tr class="row">
+        <th class="col-md-2 col-sm-2">Usuário</th>
+        <th class="col-md-2 col-sm-2">Conteúdo</th>
+        <th class="col-md-4 col-sm-4">Notificação</th>
+        <th class="col-md-2 col-sm-2">Ação</th>
+        <th class="col-md-2 col-sm-2">Data</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for sinalizacao in sinalizacoes %}
+        <tr class="row">
+            <td class="col-sm-2 col-md-2">
+                <h6>{{ sinalizacao.usuario.nome_completo }}</h6>
+            </td>
+            <td class="col-sm-2 col-md-2">
+                <a href="{% url 'conteudo' sinalizacao.conteudo.id %}" class="text-primary">
+                {{ sinalizacao.conteudo }}
+                </a>
+            </td>           
+            <td class="col-sm-4 col-md-4">
+                <h6>{{ sinalizacao.notificacao }}</h6>
+            </td>
+            <td class="col-sm-2 col-md-2">
+                <h6 class="borda" style="display: inline-block; padding: 1px;">
+                    {{ sinalizacao.status_verbose }}
+                </h6>
+            </td>
+            <td class="col-sm-2 col-md-2">
+                <h6>{{ sinalizacao.data|date:"d/m" }}</h6>
+            </td>
+        </tr>
+{% endfor %}
+    </tbody>
+</table>
+
+<!-- Paginação -->
+{% include 'paginas/pagination.html' %}
+<!-- Fim da Paginação -->
+
+{% else %}
+<hr class="my-hr-line">
+<div class="row mt-4">
+    <h6 class="mx-auto lead">
+        Não há nenhuma sinalização de conteúdo no histórico. Quer voltar para página principal? Volte para <a href="{% url 'index' %}" class="text-primary">página de trilhas.</a>  
+    </h6>
+</div>
+{% endif %}
+{% endblock %}
+
+

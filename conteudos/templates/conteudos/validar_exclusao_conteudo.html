@@ -1,0 +1,108 @@
+{% extends 'paginas/base.html' %}
+
+{% load static %}
+
+{% block header %}
+
+<link href="{% static 'css/tags_snippet.css' %}" rel="stylesheet">
+
+{% endblock header %}
+
+
+{% block conteudo %}
+
+<form class="needs-validation" id="formConteudo" novalidate>
+
+
+<div class="form-row justify-content-center mb-5">
+
+    <div class="col-lg-6 col-md-12">
+
+        <h1 class="mt-5">Conteúdo Original</h1>
+
+        <h3 class="mt-3">Conteúdo</h3>
+        <hr>
+
+        <label class="lead" for="titulo">Título do conteúdo</label>
+        <div class="d-flex div-pai">
+            <input type="text" class="form-control" value="{{ solicitacao.conteudo_pendente.titulo }}" required disabled>
+        </div> 
+        <label for="thumbnail" class="lead">Thumbnail</label>
+        {% if solicitacao.conteudo_pendente.thumbnail %}
+        <div class="col-4 p-0 m-0 mb-3">
+            <img src="{{ solicitacao.conteudo_pendente.thumbnail.url }}" class="borda">
+        </div>
+        {% endif %}
+
+        <label class="lead" for="descricao">Descrição</label>
+        <div class="d-flex div-pai">
+            <textarea name="descricao" class="form-control" required disabled>{{ solicitacao.conteudo_pendente.descricao }}</textarea>
+        </div> 
+        <label class="lead" for="tipo_de_conteudo">Tipo de conteúdo</label>
+        <div class="d-flex div-pai">
+            <select class="form-control" name="tipo_de_conteudo" value="{{ solicitacao.conteudo_pendente.tipo }}" required disabled>
+                <option value="video" {% if solicitacao.conteudo_pendente.tipo ==  "video"%}selected{% endif %}>Vídeo</option>
+                <option value="arquivo" {% if solicitacao.conteudo_pendente.tipo ==  "arquivo"%}selected{% endif %}>Arquivo</option>
+            </select>
+        </div> 
+        
+
+        <h3 class="mt-5">Classificação</h3>
+        <hr>
+
+        <div class="d-flex">
+            <div class="w-100">
+                <label class="lead" for="tipo_de_tecnologia">Tecnologia</label>
+                <div class="d-flex div-pai">
+                    <select class="form-control" name="tipo_de_tecnologia" onchange="getTecnologias($(this).val(), atualizarSecoes)" required disabled>
+                        {% for tecnologia in tecnologias %}
+                        <option value="{{ tecnologia.nome }}" {% if tecnologia.nome == solicitacao.conteudo_pendente.secao.tecnologia.nome %}selected{% endif %}>{{ tecnologia.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div> 
+            </div>
+        </div>
+
+        <div class="d-flex">
+            <div class="w-100">
+                <label class="lead" for="tipo_de_secao">Seção</label>
+                <div class="d-flex div-pai">
+                    <select class="form-control" name="tipo_de_secao" id="secao_select" required disabled>
+                        {% for secao in secoes %}
+                        <option value="{{ secao.nome }}" {% if secao.nome == solicitacao.conteudo_pendente.secao.nome %} selected {% endif %}>{{ secao.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div> 
+            </div>
+        </div>
+
+        <p class="lead mt-3" for="tags">Tags</p>
+        <div class="d-flex" style="flex-flow: row wrap;">
+            {% if solicitacao.conteudo_pendente.tags.all %}
+                {% for tag in solicitacao.conteudo_pendente.tags.all %}    
+                    <p class="px-3 py-2 bg-dark borda text-light mr-2">{{ tag.nome }}</p>
+                {% endfor %}
+            {% else %}
+                <p>Sem Tags</p>
+            {% endif %}
+        </div>
+        <div class="d-flex justify-content-center">
+            <button type="button" class="btn text-light btn-lg bg-dark mt-3" data-toggle="modal" data-target="#modalRejeicao">Rejeitar conteúdo<i class="fa fa-times ml-3" aria-hidden="true"></i></button>
+            <button type="submit" class="btn text-light btn-lg bg-ifstudy mt-3 ml-3">Aprovar exclusão do conteúdo<i class="fas fa-save ml-3"></i></button>
+        </div>
+    </div>
+</div>
+</form>
+{% include "./modal_rejeicao_conteudo.html" %}
+<script>
+    solicitacao_id = '{{ solicitacao.id }}';
+    tags =  JSON.parse('{{ tags | escapejs }}');
+</script>
+<script src="{% static 'js/tags_snippet.js' %}"></script>
+<script src="{% static 'js/validar_exclusao_conteudo.js' %}"></script>
+<script src="{% static 'js/modal_rejeicao_conteudo.js' %}"></script>
+
+{% endblock conteudo %}
+
+{% block script %}
+{% endblock script %}

@@ -1,0 +1,54 @@
+{% extends 'paginas/base.html' %}
+{% load static %}
+{% load admin_utils %}
+
+{% block conteudo %}
+
+<div class="row message">
+    <div class="col-md-5">
+        {% include 'paginas/alertas.html' %}
+    </div>
+</div>
+
+<!-- Filtro -->
+{% include 'paginas/filtro_header.html' %}
+<!-- Fim -->
+    
+<div class="row">
+    <div class="mx-auto h1">Nossas Trilhas</div>
+</div>
+
+{% for tecnologia in tecnologias %}
+<div class="row">
+    <div class="col-md-10 col-lg-10 mx-auto mt-5">
+        <a href="{% url 'secoes' tecnologia.id %}">
+            <div class="card bg-cinza-escuro borda"
+            {% admin_editable user.is_superuser "conteudos" "tecnologia" tecnologia.id %}
+            data-edit-button-top="5" data-edit-button-right="5">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6 d-none d-md-block text-md-center">
+                            <img src="{% static 'img/image.jpg' %}" class="borda">
+                        </div>
+                        <div class="col-lg-6 text-md-center mt-lg-5">
+                            <h4 class="display-3 text-dark">{{ tecnologia.nome }}</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+{% empty %}
+<hr class="my-hr-line">
+<div class="row mt-4">
+    <h6 class="mx-auto lead">
+        Não possui conteúdo registrado na plataforma. Você deseja contribuir com a plataforma? <a href="{% url 'registrar' %}" class="text-primary">Compartilhar conteúdo.</a>
+    </h6>
+</div>
+{% endfor %}
+
+<script src="{% static 'js/trilhas.js' %}"></script>
+
+{% endblock conteudo %}
