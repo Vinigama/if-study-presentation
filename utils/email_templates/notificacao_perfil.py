@@ -40,7 +40,7 @@ default_message = '''\
                     <br/>
                     <!-- Título -->
                     <font style="font-size:19px; font-family: Arial; font-weight:bold;">
-                        Perfil Sinalizado
+                        Conteúdo Sinalizado
                     </font>
                 </td>
             </tr>
