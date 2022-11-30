@@ -54,7 +54,9 @@
         </div>
         <div class="p-2">
             <div class="h6 mt-2">
-                {{ sinalizacao.conteudo.criador.nome_completo }}
+                <a href="{% url 'perfil' sinalizacao.conteudo.criador.id %}" class="text-primary">
+                    {{ sinalizacao.conteudo.criador.nome_completo }}
+                </a>
             </div>
         </div>
         <div class="p-2 mt-2">
@@ -89,7 +91,9 @@
             </div>
             <div class="p-2">
                 <div class="h6 mt-2">
+                    <a href="{% url 'perfil' sinalizacao.comentario.criador.id %}" class="text-primary">
                     {{ sinalizacao.comentario.criador.nome_completo }}
+                    </a>
                 </div>
             </div>
             <div class="p-2 mt-2">
