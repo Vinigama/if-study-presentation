@@ -60,7 +60,9 @@
 {% for sinalizacao in sinalizacoes %}
     <tr class="row">
         <td class="col-sm-2 col-md-2">
-            <h6>{{ sinalizacao.usuario.nome_completo }}</h6>
+            <a href="{% url 'perfil' sinalizacao.usuario.id %}" class="text-primary">
+                <h6>{{ sinalizacao.usuario.nome_completo }}</h6>
+            </a>
         </td>
         <td class="col-sm-6 col-md-6">
             <h6>{{ sinalizacao.comentario }}</h6>
